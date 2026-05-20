@@ -90,6 +90,8 @@ API_BASE_URL = cfg.server.api_url
 FIRE_EVENT_ENDPOINT = cfg.server.fire_event_endpoint
 TOKEN_API_URL = f"{API_BASE_URL}{FIRE_EVENT_ENDPOINT}"
 DEVICE_UUID = cfg.device.uuid
+DEVICE_API_KEY = cfg.device.api_key
+API_HEADERS = {"X-Device-API-Key": DEVICE_API_KEY}
 
 MODEL_PATH = cfg.yolo.model_path
 CONF_THRESHOLD = cfg.yolo.confidence
@@ -126,7 +128,7 @@ class LiveKitManager:
             payload = {"deviceUuid": DEVICE_UUID, "detectionType": detection_type}
             log_api(f"Payload: {payload}")
 
-            response = requests.post(TOKEN_API_URL, json=payload, timeout=5)
+            response = requests.post(TOKEN_API_URL, json=payload, headers=API_HEADERS, timeout=5)
             response.raise_for_status()
 
             data = response.json()

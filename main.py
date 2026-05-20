@@ -26,6 +26,8 @@ cfg = load_config(args.config)
 LIVEKIT_URL = cfg.livekit.url
 TOKEN_API_URL = f"{cfg.server.api_url}{cfg.server.fire_event_endpoint}"
 DEVICE_UUID = cfg.device.uuid
+DEVICE_API_KEY = cfg.device.api_key
+API_HEADERS = {"X-Device-API-Key": DEVICE_API_KEY}
 ROOM_NAME = "fire_emergency_room"
 
 MODEL_PATH = cfg.yolo.model_path
@@ -89,7 +91,7 @@ class LiveKitManager:
             payload = {"deviceUuid": DEVICE_UUID, "detectionType": detection_type}
             print(f"[DEBUG] Sending Payload: {payload}")
 
-            response = requests.post(TOKEN_API_URL, json=payload, timeout=5)
+            response = requests.post(TOKEN_API_URL, json=payload, headers=API_HEADERS, timeout=5)
             response.raise_for_status()
 
             data = response.json()

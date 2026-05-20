@@ -10,6 +10,7 @@ livekit:
 
 device:
   uuid: "067e6162-3b6f-4ae2-a171-2470b63dff00"
+  api_key: "dev-api-key-001"  # 서버에 등록된 카메라의 API Key
 
 ble:
   arduino_mac: "90:9F:4D:1A:35:A1"
