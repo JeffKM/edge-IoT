@@ -1,0 +1,31 @@
+# Ember Sentinel — 엣지 IoT 설정 파일
+# 환경에 맞게 수정하여 사용
+
+server:
+  api_url: "http://localhost:8080"
+  fire_event_endpoint: "/embedded/fire-event/publish"
+
+livekit:
+  url: "ws://localhost:7880"
+
+device:
+  uuid: "067e6162-3b6f-4ae2-a171-2470b63dff00"
+
+ble:
+  arduino_mac: "90:9F:4D:1A:35:A1"
+  characteristic_uuid: "12345678-1234-5678-1234-56789abcdef1"
+
+yolo:
+  model_path: "./experiments/yolov11n/weights/best_ncnn_model"
+  confidence: 0.4
+  image_size: 640
+
+camera:
+  index: 0
+  width: 640
+  height: 480
+
+stream:
+  max_duration: 30
+  restart_delay: 60
+  alert_cooldown: 10

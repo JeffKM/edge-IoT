@@ -1,0 +1,21 @@
+# Ember Sentinel — 엣지 IoT 의존성
+# pip install -r requirements.txt
+
+# 컴퓨터 비전
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# YOLO 객체 감지
+ultralytics>=8.3.0
+
+# WebRTC 실시간 스트리밍
+livekit>=0.11.0
+
+# BLE 통신 (라즈베리파이 전용, --no-ble 시 불필요)
+bleak>=0.21.0
+
+# 설정 파일 로드
+pyyaml>=6.0
+
+# HTTP 요청
+requests>=2.31.0

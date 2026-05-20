@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# 가상환경
+venv/
+.venv/
+env/
+
+# YOLO 모델 (용량이 크므로 Git 미포함)
+experiments/
+*.pt
+*.onnx
+*.ncnn
+runs/
+
+# 샘플 영상 (Git 미포함)
+samples/*.mp4
+samples/*.avi
+samples/*.mov
+samples/*.mkv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 환경 설정 (민감 정보 포함 가능)
+config.local.yaml
