@@ -41,3 +41,4 @@ logs/
 
 # 환경 설정 (민감 정보 포함 가능)
 config.local.yaml
+config.production.yaml
