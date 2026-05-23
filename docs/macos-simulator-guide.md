@@ -73,7 +73,7 @@ print('모델 로딩 성공')
 "
 
 # LiveKit Python SDK 테스트 (M1/M2 ARM64 호환)
-python -c "import livekit; print('LiveKit SDK 버전:', livekit.__version__)"
+python -c "import livekit; print('LiveKit SDK 로딩 성공')"
 
 # 웹캠 접근 테스트
 # 시스템 설정 → 개인 정보 보호 → 카메라 → 터미널 앱 허용 필요
