@@ -22,10 +22,20 @@
 
 ### 1.1 레포 클론 및 가상환경
 
+> **⚠️ Python 버전**: numpy, ultralytics 등 과학 계산 패키지는 **Python 3.12 또는 3.13**을 권장합니다.
+> Python 3.14(프리릴리즈)는 사전 빌드된 wheel이 없어 C++ 소스 컴파일이 필요하며, 빌드 실패할 수 있습니다.
+
 ```bash
 cd /Users/jefflee/Projects
 git clone https://github.com/JeffKM/edge-IoT.git  # 이미 클론한 경우 생략
 cd edge-IoT
+
+# Python 버전 확인 (3.12.x 또는 3.13.x 권장)
+python3 --version
+
+# pyenv를 사용하는 경우 (Python 3.14가 기본인 환경)
+# pyenv install 3.12.8
+# pyenv local 3.12.8
 
 # Python 가상환경 생성
 python3 -m venv venv
@@ -48,8 +58,8 @@ NCNN은 Raspberry Pi ARM Linux 전용이므로 macOS에서는 `.pt` 모델이 �
 mkdir -p experiments/yolov11n/weights/
 # 다운로드한 best.pt를 위 경로에 복사
 
-# 방법 B: Ultralytics 기본 모델 다운로드 (화재 감지 미학습)
-python -c "from ultralytics import YOLO; YOLO('yolov11n.pt')"
+# 방법 B: Ultralytics 기본 모델 다운로드 (화재 감지 미학습, 파이프라인 테스트용)
+python -c "from ultralytics import YOLO; YOLO('yolo11n.pt')"
 ```
 
 ### 1.3 macOS 호환성 검증
@@ -240,6 +250,7 @@ INFO  LiveKit 연결 완료. 스트리밍 시작.
 | `서버 연결 실패` | EC2 서버 중단 | `curl http://***REMOVED_IP***:8080` 으로 확인 |
 | `LiveKit 연결 타임아웃` | 네트워크 또는 토큰 문제 | LiveKit Cloud 대시보드에서 API 키 확인 |
 | `import livekit 오류` | ARM64 호환성 | `pip install livekit --upgrade` |
+| `numpy 빌드 실패 (metadata-generation-failed)` | Python 3.14 프리릴리즈 사용 | Python 3.12/3.13으로 전환: `pyenv install 3.12.8 && pyenv local 3.12.8` 후 venv 재생성 |
 | `NCNN 모델 사용 불가` | macOS 미지원 | `.pt` 모델로 변경 (`config.production.yaml`) |
 
 ---
