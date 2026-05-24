@@ -411,9 +411,9 @@ async def run_system():
                     except Exception as e:
                         logger.debug("BLE heartbeat 전송 실패: %s", e)
 
-                # --- [Logic D] 프레임 전송 ---
+                # --- [Logic D] 프레임 전송 (YOLO 바운딩 박스 포함) ---
                 if streamer.is_connected:
-                    streamer.send_frame(frame)
+                    streamer.send_frame(annotated_frame)
 
                 # --- [Logic E] 상태 표시 ---
                 status_text = "Monitoring..."

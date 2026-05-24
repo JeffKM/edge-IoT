@@ -373,9 +373,9 @@ async def run_simulator():
                     await streamer.disconnect()
                     last_stream_end_time = current_time
 
-            # --- 프레임 전송 ---
+            # --- 프레임 전송 (YOLO 바운딩 박스 포함) ---
             if streamer.is_connected:
-                streamer.send_frame(frame)
+                streamer.send_frame(annotated_frame)
 
             # --- GUI 표시 ---
             if not headless:
