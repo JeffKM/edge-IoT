@@ -98,11 +98,11 @@ cap.release()
 
 ```yaml
 server:
-  api_url: "http://***REMOVED_IP***:8080"
+  api_url: "http://<YOUR_SERVER_IP>:8080"
   fire_event_endpoint: "/embedded/fire-event/publish"
 
 livekit:
-  url: "wss://***REMOVED_LIVEKIT_URL***"
+  url: "wss://<YOUR_LIVEKIT_URL>"
 
 device:
   uuid: "<서버에 등록한 디바이스 UUID>"    # 아래 3절 참조
@@ -142,8 +142,8 @@ retry:
 
 | 항목 | config.yaml (개발) | config.production.yaml |
 |------|---------------------|------------------------|
-| `server.api_url` | `http://localhost:8080` | `http://***REMOVED_IP***:8080` |
-| `livekit.url` | `ws://localhost:7880` | `wss://***REMOVED_LIVEKIT_URL***` |
+| `server.api_url` | `http://localhost:8080` | `http://<YOUR_SERVER_IP>:8080` |
+| `livekit.url` | `ws://localhost:7880` | `wss://<YOUR_LIVEKIT_URL>` |
 | `yolo.model_path` | `./experiments/.../best_ncnn_model` | `./experiments/.../best.pt` |
 
 ---
@@ -167,7 +167,7 @@ cd /Users/jefflee/Projects/ember-sentinel
 ACCESS_TOKEN="<앱 로그인 후 받은 JWT>"
 ROOM_ID=1
 
-curl -X POST http://***REMOVED_IP***:8080/room/${ROOM_ID}/camera-edge \
+curl -X POST http://<YOUR_SERVER_IP>:8080/room/${ROOM_ID}/camera-edge \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -229,8 +229,8 @@ python simulator.py --config config.production.yaml --headless
 INFO  YOLO 모델 로드 완료.
 INFO  카메라 0번 열기 성공.
 INFO  BLE: 비활성 (시뮬레이터 모드)
-INFO  API 서버: http://***REMOVED_IP***:8080
-INFO  LiveKit: wss://***REMOVED_LIVEKIT_URL***
+INFO  API 서버: http://<YOUR_SERVER_IP>:8080
+INFO  LiveKit: wss://<YOUR_LIVEKIT_URL>
 INFO  모니터링 시작.
 WARNING 🔥 FIRE 감지! (신뢰도: 0.78)
 INFO  FIRE 감지! 서버에 이벤트 발행 + 스트리밍 시작...
@@ -244,8 +244,8 @@ INFO  LiveKit 연결 완료. 스트리밍 시작.
 2026-05-23 22:04:35 [INFO ] simulator — YOLO 모델 로드 완료.
 2026-05-23 22:04:35 [INFO ] simulator — 입력 소스: 비디오 파일 (samples/fire-sample.mp4)
 2026-05-23 22:04:35 [INFO ] simulator — BLE: 비활성 (시뮬레이터 모드)
-2026-05-23 22:04:35 [INFO ] simulator — API 서버: http://***REMOVED_IP***:8080
-2026-05-23 22:04:35 [INFO ] simulator — LiveKit: wss://***REMOVED_LIVEKIT_URL***
+2026-05-23 22:04:35 [INFO ] simulator — API 서버: http://<YOUR_SERVER_IP>:8080
+2026-05-23 22:04:35 [INFO ] simulator — LiveKit: wss://<YOUR_LIVEKIT_URL>
 2026-05-23 22:04:35 [INFO ] simulator — 모니터링 시작. Ctrl+C로 종료
 2026-05-23 22:04:36 [WARNING] simulator — 🔥 SMOKE 감지! (신뢰도: 0.52) [Frame #1]
 2026-05-23 22:04:36 [INFO ] simulator — SMOKE 감지! 서버에 이벤트 발행 + 스트리밍 시작...
@@ -302,7 +302,7 @@ INFO  LiveKit 연결 완료. 스트리밍 시작.
 |------|------|------|
 | `모델 로드 실패` | .pt 파일 경로 오류 | `ls experiments/yolov11n/weights/best.pt` 확인 |
 | `카메라 열기 실패` | 카메라 권한 미부여 | 시스템 설정 → 개인 정보 → 카메라 → 터미널 허용 |
-| `서버 연결 실패` | EC2 서버 중단 | `curl http://***REMOVED_IP***:8080` 으로 확인 |
+| `서버 연결 실패` | EC2 서버 중단 | `curl http://<YOUR_SERVER_IP>:8080` 으로 확인 |
 | `LiveKit 연결 타임아웃` | 네트워크 또는 토큰 문제 | LiveKit Cloud 대시보드에서 API 키 확인 |
 | `import livekit 오류` | ARM64 호환성 | `pip install livekit --upgrade` |
 | `numpy 빌드 실패 (metadata-generation-failed)` | Python 3.14 프리릴리즈 사용 | Python 3.12/3.13으로 전환: `pyenv install 3.12.8 && pyenv local 3.12.8` 후 venv 재생성 |
