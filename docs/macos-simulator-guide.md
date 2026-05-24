@@ -117,6 +117,22 @@ camera:
   index: 0      # macOS 내장 웹캠
   width: 640
   height: 480
+
+stream:
+  max_duration: 30    # 최대 스트리밍 시간 (초)
+  restart_delay: 60   # 스트리밍 재시작 딜레이 (초)
+  alert_cooldown: 10  # 감지 로그 쿨다운 (초)
+
+logging:
+  level: "INFO"
+  file: "logs/simulator.log"
+  max_bytes: 5242880   # 5MB
+  backup_count: 3
+
+retry:
+  max_attempts: 3
+  base_delay: 1.0
+  max_delay: 10.0
 ```
 
 > **디바이스 UUID와 API 키**: ember-sentinel 레포의 `scripts/e2e-verify.sh`를 사용하여
@@ -207,6 +223,8 @@ python simulator.py --config config.production.yaml --headless
 
 시뮬레이터가 정상 동작하면 다음 로그가 순서대로 출력됩니다:
 
+**웹캠 입력 시:**
+
 ```
 INFO  YOLO 모델 로드 완료.
 INFO  카메라 0번 열기 성공.
@@ -218,6 +236,29 @@ WARNING 🔥 FIRE 감지! (신뢰도: 0.78)
 INFO  FIRE 감지! 서버에 이벤트 발행 + 스트리밍 시작...
 INFO  LiveKit 연결 완료. 스트리밍 시작.
 ```
+
+**비디오 파일 입력 시 (검증 완료된 실제 로그):**
+
+```
+2026-05-23 22:04:35 [INFO ] simulator — Ember Sentinel — Edge IoT Simulator
+2026-05-23 22:04:35 [INFO ] simulator — YOLO 모델 로드 완료.
+2026-05-23 22:04:35 [INFO ] simulator — 입력 소스: 비디오 파일 (samples/fire-sample.mp4)
+2026-05-23 22:04:35 [INFO ] simulator — BLE: 비활성 (시뮬레이터 모드)
+2026-05-23 22:04:35 [INFO ] simulator — API 서버: http://***REMOVED_IP***:8080
+2026-05-23 22:04:35 [INFO ] simulator — LiveKit: wss://***REMOVED_LIVEKIT_URL***
+2026-05-23 22:04:35 [INFO ] simulator — 모니터링 시작. Ctrl+C로 종료
+2026-05-23 22:04:36 [WARNING] simulator — 🔥 SMOKE 감지! (신뢰도: 0.52) [Frame #1]
+2026-05-23 22:04:36 [INFO ] simulator — SMOKE 감지! 서버에 이벤트 발행 + 스트리밍 시작...
+2026-05-23 22:04:36 [INFO ] simulator — 토큰 요청 중 (type: SMOKE)...
+2026-05-23 22:04:40 [INFO ] simulator — LiveKit 서버에 연결 중...
+2026-05-23 22:04:44 [INFO ] simulator — LiveKit 연결 완료. 스트리밍 시작.
+2026-05-23 22:04:46 [WARNING] simulator — 🔥 SMOKE 감지! (신뢰도: 0.51) [Frame #7]
+2026-05-23 22:04:56 [WARNING] simulator — 🔥 SMOKE 감지! (신뢰도: 0.49) [Frame #52]
+2026-05-23 22:05:06 [INFO ] simulator — 최대 스트리밍 시간(30s) 도달. 중단.
+2026-05-23 22:05:06 [INFO ] simulator — LiveKit 연결 해제.
+```
+
+> fire-sample.mp4(6초 클립)은 자동 반복 재생되며, 약 4초 만에 SMOKE 감지 → 서버 이벤트 발행 → LiveKit 연결 → 30초 스트리밍 → 자동 중단까지 전체 E2E 플로우가 동작합니다.
 
 ---
 
@@ -239,6 +280,20 @@ INFO  LiveKit 연결 완료. 스트리밍 시작.
 - 또는 최대 30초 후 자동 중단
 - 중단 후 60초 쿨다운 (재시작 딜레이)
 
+### 검증 결과 (2026-05-23)
+
+| 단계 | 내용 | 결과 |
+|:---:|------|:---:|
+| 1 | 시뮬레이터 실행 (`fire-sample.mp4`, headless) | PASS |
+| 2 | YOLO 감지 (SMOKE, 신뢰도 0.52, Frame #1) | PASS |
+| 3 | `POST /embedded/fire-event/publish` → HTTP 201 | PASS |
+| 4 | LiveKit Room 생성 (`fire_event_6`) | PASS |
+| 5 | LiveKit 토큰 수령 (Publisher) | PASS |
+| 6 | WebRTC 영상 퍼블리시 (30초) | PASS |
+| 7 | 최대 스트리밍 시간 도달 → 자동 중단 | PASS |
+
+> 수동 화재 이벤트 발행(`curl`)도 HTTP 201 정상 응답 확인됨.
+
 ---
 
 ## 7. 트러블슈팅
@@ -252,6 +307,9 @@ INFO  LiveKit 연결 완료. 스트리밍 시작.
 | `import livekit 오류` | ARM64 호환성 | `pip install livekit --upgrade` |
 | `numpy 빌드 실패 (metadata-generation-failed)` | Python 3.14 프리릴리즈 사용 | Python 3.12/3.13으로 전환: `pyenv install 3.12.8 && pyenv local 3.12.8` 후 venv 재생성 |
 | `NCNN 모델 사용 불가` | macOS 미지원 | `.pt` 모델로 변경 (`config.production.yaml`) |
+| `메타데이터 업데이트 실패` | LiveKit Python SDK 버전 차이 | 기능에 영향 없음 (무시 가능). `pip install livekit --upgrade`로 해결 가능 |
+| `HTTP 429 (Rate Limit)` | 1분 내 중복 이벤트 발행 | Rate Limit 해제 대기 (1분) 또는 서버 설정 조정 |
+| `h264 mmco: unref short failure` | 샘플 영상 인코딩 경고 | 동작에 영향 없음 (OpenCV 내부 경고, 무시 가능) |
 
 ---
 
