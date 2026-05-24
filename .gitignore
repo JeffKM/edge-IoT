@@ -36,6 +36,9 @@ samples/*.mkv
 .DS_Store
 Thumbs.db
 
+# Expo 캐시
+.expo/
+
 # 로그 파일
 logs/
 
